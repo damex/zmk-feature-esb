@@ -1,0 +1,80 @@
+# Copyright 2026 Roman Kuzmitskii (@damex)
+# SPDX-License-Identifier: MIT
+
+menuconfig ZMK_ESB
+    bool "ZMK ESB split transport (single peripheral)"
+    depends on ZMK_SPLIT
+    select ESB
+    help
+      Enhanced ShockBurst (2.4 GHz) split transport for a single peripheral and a
+      single central. One ESB packet carries one complete split message; ESB
+      hardware ACK, retransmit and CRC provide reliability.
+
+if ZMK_ESB
+
+choice
+    prompt "ESB bitrate"
+    default ZMK_ESB_BITRATE_2MBPS
+
+config ZMK_ESB_BITRATE_2MBPS
+    bool "2 Mbps"
+
+config ZMK_ESB_BITRATE_1MBPS
+    bool "1 Mbps (longer range, half throughput)"
+
+endchoice
+
+config ZMK_ESB_TX_POWER_DBM
+    int "TX output power (dBm)"
+    default 0
+    help
+      Boot TX power. Raise for range; the radio rounds to its nearest supported
+      level.
+
+config ZMK_ESB_RETRANSMIT_COUNT
+    int "Hardware retransmit attempts before a packet is dropped"
+    default 3
+    help
+      ESB re-sends an unacknowledged packet up to this many times. Higher is more
+      reliable, more on-air congestion.
+
+config ZMK_ESB_RETRANSMIT_DELAY_US
+    int "Delay between retransmits (microseconds)"
+    default 600
+
+config ZMK_ESB_LOSSY_INPUT
+    bool "Send pointer/input events without ACK (lower latency, lossy)"
+    default n
+    help
+      Pointer motion is high-rate and self-correcting, so a dropped sample is
+      invisible and skipping the ACK lowers latency and congestion. Trade-off: the
+      central->peripheral reverse channel rides on ACKs, so with this enabled the
+      reverse channel is served only by the ACK'd (non-input) packets.
+
+config ZMK_ESB_MAX_PAYLOAD
+    int "Max on-air payload bytes"
+    default 48
+    help
+      Must be >= the largest split message struct. A build assert checks this.
+
+config ZMK_ESB_RX_QUEUE_SIZE
+    int "Received-packet queue depth"
+    default 16
+
+config ZMK_ESB_REPLY_QUEUE_SIZE
+    int "Central: pending reverse-channel command depth"
+    default 8
+
+config ZMK_ESB_PRIORITY
+    int "Split transport registration priority"
+    default 50
+
+# Size the NCS ESB payload buffers to ours.
+config ESB_MAX_PAYLOAD_LENGTH
+    default ZMK_ESB_MAX_PAYLOAD
+
+module = ZMK_ESB
+module-str = ZMK ESB split transport
+source "subsys/logging/Kconfig.template.log_config"
+
+endif # ZMK_ESB
