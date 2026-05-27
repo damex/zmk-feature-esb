@@ -137,8 +137,9 @@ static int hfclk_request(void) {
     return result;
 }
 
-/* Push base addresses, prefix, channel, TX power into the radio. Each set_*
- * failure is informational only — the radio still starts on the values it had. */
+/* Push base addresses, prefix, channel, TX power into the radio.
+ * set_* failures are logged and ignored; the radio starts on whatever
+ * values it already held. */
 static int esb_link_radio_setup(void) {
     uint8_t base_address_1[4] = {0};
     uint8_t prefixes[1] = {address_prefix};
