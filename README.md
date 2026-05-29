@@ -1,8 +1,9 @@
 # zmk-feature-split-esb
 
 Enhanced ShockBurst (2.4 GHz) split transport for ZMK. One peripheral, one central.
-Packet-native: one ESB packet = one split message; ESB hardware ACK + retransmit +
-CRC handle reliability.
+Packet-native: split messages map to ESB packets (a report's input events
+coalesce into one), carried over a lock-free SPSC RX path; ESB hardware ACK +
+retransmit + CRC handle reliability.
 
 ## Install
 
@@ -78,7 +79,9 @@ Tunables (Kconfig, defaults shown):
 | `ZMK_SPLIT_ESB_RETRANSMIT_COUNT` | 3 | retransmits before drop |
 | `ZMK_SPLIT_ESB_RETRANSMIT_DELAY_US` | 600 | delay between retransmits |
 | `ZMK_SPLIT_ESB_MAX_PAYLOAD` | 48 | max on-air bytes (>= largest split msg) |
-| `ZMK_SPLIT_ESB_RX_QUEUE_SIZE` | 16 | RX packet queue depth |
+| `ZMK_SPLIT_ESB_RX_QUEUE_SIZE` | 16 | RX SPSC ring depth (power of 2) |
+| `ZMK_SPLIT_ESB_RX_THREAD_STACK_SIZE` | 1536 | RX dispatch thread stack |
+| `ZMK_SPLIT_ESB_RX_THREAD_PRIORITY` | 2 | RX dispatch thread priority |
 | `ZMK_SPLIT_ESB_REPLY_QUEUE_SIZE` | 8 | central reverse-channel queue depth |
 | `ZMK_SPLIT_ESB_TX_FIFO_SIZE` | 8 | radio TX FIFO depth |
 | `ZMK_SPLIT_ESB_RX_FIFO_SIZE` | 8 | radio RX FIFO depth |
