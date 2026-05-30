@@ -24,24 +24,6 @@ config ZMK_SPLIT_ESB_BITRATE_1MBPS
 
 endchoice
 
-config ZMK_SPLIT_ESB_TX_POWER_DBM
-    int "TX output power (dBm)"
-    default 0
-    help
-      Boot TX power. Raise for range; the radio rounds to its nearest supported
-      level.
-
-config ZMK_SPLIT_ESB_RETRANSMIT_COUNT
-    int "Hardware retransmit attempts before a packet is dropped"
-    default 3
-    help
-      ESB re-sends an unacknowledged packet up to this many times. Higher is more
-      reliable, more on-air congestion.
-
-config ZMK_SPLIT_ESB_RETRANSMIT_DELAY_US
-    int "Delay between retransmits (microseconds)"
-    default 600
-
 config ZMK_SPLIT_ESB_MAX_PAYLOAD
     int "Max on-air payload bytes"
     default 48

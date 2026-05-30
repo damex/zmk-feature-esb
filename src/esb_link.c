@@ -28,6 +28,9 @@ BUILD_ASSERT(DT_HAS_COMPAT_STATUS_OKAY(zmk_split_esb),
 static const uint8_t base_address[] = DT_INST_PROP(0, base_address);
 static const uint8_t address_prefix = DT_INST_PROP(0, prefix);
 static const uint8_t rf_channel = DT_INST_PROP(0, rf_channel);
+static const int8_t tx_power_dbm = DT_INST_PROP(0, tx_power_dbm);
+static const uint16_t retransmit_count = DT_INST_PROP(0, retransmit_count);
+static const uint16_t retransmit_delay_us = DT_INST_PROP(0, retransmit_delay_us);
 BUILD_ASSERT(sizeof(base_address) == 4, "base-address must be exactly 4 bytes");
 
 /* NCS's CONFIG_ESB_MAX_PAYLOAD_LENGTH default (32) wins over ours on Kconfig parse
@@ -180,7 +183,7 @@ static int esb_link_radio_setup(void) {
     if (set_error) {
         LOG_DBG("esb_set_rf_channel returned %d", set_error);
     }
-    set_error = esb_set_tx_power(CONFIG_ZMK_SPLIT_ESB_TX_POWER_DBM);
+    set_error = esb_set_tx_power(tx_power_dbm);
     if (set_error) {
         LOG_DBG("esb_set_tx_power returned %d", set_error);
     }
@@ -209,8 +212,8 @@ int esb_link_init(esb_link_rx_callback_t callback) {
     config.bitrate =
         IS_ENABLED(CONFIG_ZMK_SPLIT_ESB_BITRATE_2MBPS) ? ESB_BITRATE_2MBPS : ESB_BITRATE_1MBPS;
     config.crc = ESB_CRC_16BIT;
-    config.retransmit_count = CONFIG_ZMK_SPLIT_ESB_RETRANSMIT_COUNT;
-    config.retransmit_delay = CONFIG_ZMK_SPLIT_ESB_RETRANSMIT_DELAY_US;
+    config.retransmit_count = retransmit_count;
+    config.retransmit_delay = retransmit_delay_us;
     /* Per-packet ACK is controlled by event_wants_ack() in peripheral.c; the
      * reverse channel rides the ACKs that the peripheral does request. */
     config.selective_auto_ack = true;

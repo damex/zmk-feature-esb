@@ -54,6 +54,9 @@ esb_link: esb_link {
 | `base-address` | 4-byte bytestring `[..]`, pipe 0 |
 | `prefix` | 1 byte, pipe 0 |
 | `rf-channel` | 0-100 (2400 + N MHz) |
+| `tx-power-dbm` | boot TX power, dBm (default 0); raise for range |
+| `retransmit-count` | retransmits before drop (default 3) |
+| `retransmit-delay-us` | delay between retransmits (default 600) |
 | `lossy-codes` | optional list of `<INPUT_EV_* code>` pairs sent without ACK |
 
 Lossy-codes lists the input axes the peripheral fires-and-forgets. Reserve for
@@ -75,9 +78,6 @@ Tunables (Kconfig, defaults shown):
 | Option | Default | Notes |
 |---|---|---|
 | `ZMK_SPLIT_ESB_BITRATE_2MBPS` / `ZMK_SPLIT_ESB_BITRATE_1MBPS` | 2 Mbps | link rate |
-| `ZMK_SPLIT_ESB_TX_POWER_DBM` | 0 | boot TX power; raise for range |
-| `ZMK_SPLIT_ESB_RETRANSMIT_COUNT` | 3 | retransmits before drop |
-| `ZMK_SPLIT_ESB_RETRANSMIT_DELAY_US` | 600 | delay between retransmits |
 | `ZMK_SPLIT_ESB_MAX_PAYLOAD` | 48 | max on-air bytes (>= largest split msg) |
 | `ZMK_SPLIT_ESB_RX_QUEUE_SIZE` | 16 | RX SPSC ring depth (power of 2) |
 | `ZMK_SPLIT_ESB_RX_THREAD_STACK_SIZE` | 1536 | RX dispatch thread stack |
