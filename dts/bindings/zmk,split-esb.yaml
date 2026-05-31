@@ -33,6 +33,15 @@ properties:
     type: int
     default: 600
     description: Delay between retransmits, microseconds.
+  use-fast-ramp-up:
+    type: boolean
+    description: |
+      Shorter radio TX/RX ramp-up delay. nRF52/nRF53 only; both sides must match.
+  crc-bits:
+    type: int
+    default: 16
+    enum: [0, 8, 16]
+    description: CRC width in bits (0 disables CRC). Both sides must match.
   lossy-codes:
     type: array
     description: |

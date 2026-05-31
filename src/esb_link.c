@@ -31,7 +31,22 @@ static const uint8_t rf_channel = DT_INST_PROP(0, rf_channel);
 static const int8_t tx_power_dbm = DT_INST_PROP(0, tx_power_dbm);
 static const uint16_t retransmit_count = DT_INST_PROP(0, retransmit_count);
 static const uint16_t retransmit_delay_us = DT_INST_PROP(0, retransmit_delay_us);
+static const bool use_fast_ramp_up = DT_INST_PROP(0, use_fast_ramp_up);
+static const uint8_t crc_bits = DT_INST_PROP(0, crc_bits);
 BUILD_ASSERT(sizeof(base_address) == 4, "base-address must be exactly 4 bytes");
+
+static enum esb_crc esb_crc_from_bits(uint8_t bits) {
+    switch (bits) {
+    case 0:
+        return ESB_CRC_OFF;
+    case 8:
+        return ESB_CRC_8BIT;
+    case 16:
+        return ESB_CRC_16BIT;
+    default:
+        return ESB_CRC_16BIT;
+    }
+}
 
 /* NCS's CONFIG_ESB_MAX_PAYLOAD_LENGTH default (32) wins over ours on Kconfig parse
  * order; raise it in your .conf or the radio rejects oversized payloads. */
@@ -211,13 +226,14 @@ int esb_link_init(esb_link_rx_callback_t callback) {
     config.event_handler = on_esb_event;
     config.bitrate =
         IS_ENABLED(CONFIG_ZMK_SPLIT_ESB_BITRATE_2MBPS) ? ESB_BITRATE_2MBPS : ESB_BITRATE_1MBPS;
-    config.crc = ESB_CRC_16BIT;
+    config.crc = esb_crc_from_bits(crc_bits);
     config.retransmit_count = retransmit_count;
     config.retransmit_delay = retransmit_delay_us;
     /* Per-packet ACK is controlled by event_wants_ack() in peripheral.c; the
      * reverse channel rides the ACKs that the peripheral does request. */
     config.selective_auto_ack = true;
     config.tx_mode = ESB_TXMODE_AUTO;
+    config.use_fast_ramp_up = use_fast_ramp_up;
 
     error = esb_init(&config);
     if (error) {

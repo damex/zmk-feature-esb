@@ -57,6 +57,8 @@ esb_link: esb_link {
 | `tx-power-dbm` | boot TX power, dBm (default 0); raise for range |
 | `retransmit-count` | retransmits before drop (default 3) |
 | `retransmit-delay-us` | delay between retransmits (default 600) |
+| `use-fast-ramp-up` | shorter radio ramp-up; nRF52/nRF53; both sides must match |
+| `crc-bits` | CRC width 0/8/16 (default 16; both sides must match) |
 | `lossy-codes` | optional list of `<INPUT_EV_* code>` pairs sent without ACK |
 
 Lossy-codes lists the input axes the peripheral fires-and-forgets. Reserve for
